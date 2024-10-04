@@ -4,9 +4,9 @@
    [babashka.cli :as cli]
    [clojure.string :as str]))
 
-(defonce data
+(defn parse-data [filename]
   (filter #(not (str/starts-with? % "%"))
-          (str/split-lines (slurp "./house.rec"))))
+          (str/split-lines (slurp filename))))
 
 (type "Test")
 
@@ -31,8 +31,6 @@
       split-at-empty-line
       remove-empty-entries
       (nth id "Not found")))
-
-(get-by-id data 2)
 
 (defn get-keys [input]
   (->> input
@@ -69,6 +67,9 @@
     :get-by-id {:coerce :int
                 :desc "Get values by id"
                 :alias :id}
+    :file {:coerce :string
+           :desc "Filename"
+           :alias :f}
     :sum {:coerce :string
           :desc "Sum up the values with key"
           :alias :s}}
@@ -81,18 +82,20 @@
           (format "Missing required argument: %s\n" option))
          :validate
          (println
-          (format "%s does not exist!\n" msg)))))})
+          (format "%s does not exist!\n" msg)))
+       (println "Something went wrong")))})
 
 (defn -main
   [args]
   (let [opts (cli/parse-opts args cli-spec)]
     (if (or (:help opts) (:h opts))
       (println (show-help cli-spec))
-      (cond (contains? opts :get-keys) (pretty-print  (get-keys data))
-            (contains? opts :sum) (pretty-print (sum data (get opts :sum)))
-            (contains? opts :get) (pretty-print (get-by-key data (get opts :get)))
-            (contains? opts :get-by-id) (pretty-print (get-by-id data (get opts :get-by-id)))
-            :else
-            (println "Here are your cli args!:" opts)))))
+      (cond
+        (contains? opts :get-keys) (pretty-print  (get-keys (parse-data (get opts :file))))
+        (contains? opts :sum) (pretty-print (sum (parse-data (get opts :file)) (get opts :sum)))
+        (contains? opts :get) (pretty-print (get-by-key (parse-data (get opts :file)) (get opts :get)))
+        (contains? opts :get-by-id) (pretty-print (get-by-id (parse-data (get opts :file)) (get opts :get-by-id)))
+        :else
+        (println "Here are your cli args!:" opts)))))
 
 (-main *command-line-args*)
