@@ -1,0 +1,31 @@
+%rec: House
+%typedef: Date date
+%mandatory: Amount
+%mandatory: Date
+%mandatory: Method
+
+Overall: 70000
+Yearly: 6000
+Rest: 50000
+
+Amount: 6000
+Date: 2023-12-31
+Method: Banktransfer
+
+Amount: 2000
+Date: 2024-03-12
+Method: Paypal
+
+Amount: 10000
+Date: 2024-06-13
+Method: Banktransfer
+
+Amount: 723
+Date: 2024-08-06
+Method: Paypal
+
+Amount: 1000
+Date: 2024-10-04
+Method: Banktransfer
+
+

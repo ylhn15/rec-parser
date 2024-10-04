@@ -1,0 +1,25 @@
+(ns rec-parser.core
+  (:gen-class)
+  (:require
+   [clojure.string :as str]))
+
+(defn -main
+  "I don't do a whole lot ... yet."
+  [& args]
+  (println "Hello, World!"))
+
+(defonce data
+  (filter #(not (str/starts-with? % "%"))
+          (str/split-lines (slurp "./house.rec"))))
+
+(defn get-keys [input]
+  (map #(subs % 0 (str/index-of % ":"))
+       (filter #(not (str/blank? %)) input)))
+
+(distinct) (get-keys data)
+
+(defn get-by-key [input key]
+  (filter #(str/includes? (str/lower-case %) (str/lower-case key)) input))
+
+(get-by-key data "amount")
+
